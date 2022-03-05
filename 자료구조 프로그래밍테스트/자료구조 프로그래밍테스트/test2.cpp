@@ -88,26 +88,28 @@ int main()
 
 	int black = 0;
 	int white = 0;
-	while (1)
-	{
-		cin >> r_x;
-		cin >> r_y;
-		if (gameboard[r_y][r_x] == '*')
+	
+		while (1)
 		{
-
-			if (turn % 2) {
-
-				black++;
-			}
-			else
+			cin >> r_x;
+			cin >> r_y;
+			if (gameboard[r_y][r_x] == '*')
 			{
-				white++;
+
+				if (turn % 2) {
+
+					black++;
+				}
+				else
+				{
+					white++;
+				}
 			}
+			inputRock(r_x, r_y);
+
+			cout << "검은돌의 개수 : " << black << endl;
+			cout << "흰돌의 개수 : " << white << endl;
+
 		}
-		inputRock(r_x, r_y);
-
-		cout << "검은돌의 개수 : " << black << endl;
-		cout << "흰돌의 개수 : " << white << endl;
-
-	}
+	
 }
