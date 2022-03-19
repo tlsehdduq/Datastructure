@@ -59,8 +59,6 @@ void inputRock(int i_x, int i_y)
 			}
 			cout << endl;
 		}
-
-
 	}
 	else
 	{
@@ -77,7 +75,6 @@ void inputRock(int i_x, int i_y)
 		cout << "이미 돌이 놓여있습니다." << endl;
 	}
 }
-
 
 int main()
 {
