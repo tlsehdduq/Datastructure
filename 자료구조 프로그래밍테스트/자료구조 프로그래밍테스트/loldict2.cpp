@@ -60,39 +60,6 @@ LoLdict List[MAX_LIST] = {
 
 };
 
-LoLdict SortList[MAX_LIST] = {
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"},
-	{"NONE",-1,-1,-1,-1,"NONE"}
-};
-
 int main()
 {
 	while (true) {
@@ -157,6 +124,11 @@ void Search() {
 			cout << List[i].Range << endl;
 			cout << List[i].Position << endl;
 		}
+		else
+		{
+			cout << "찾으시는 챔피언의 정보가 없습니다." << endl;
+			break;
+		}
 	}
 }
 
@@ -201,6 +173,11 @@ void Delete() {
 			List[i].Speed =-1;
 			List[i].Range = -1;
 			List[i].Position = "None";
+		}
+		else
+		{
+			cout << "삭제할 챔피언이 리스트에 없습니다." << endl << endl;
+			break;
 		}
 	}
 	PrintAll();
