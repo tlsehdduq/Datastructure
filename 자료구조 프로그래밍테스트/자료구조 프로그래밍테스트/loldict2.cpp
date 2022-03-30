@@ -1,17 +1,18 @@
 #include<iostream>
 #include<string>
 #include<Windows.h>
+
 #define MAX_LIST 30
 
 using namespace std;
 
-void Search();
-void Insert();
-void Delete();
+void Search(int start,int size, string* name);
+void Insert(int start, int size);
+void Delete(int start, int size, string* name);
 void DeleteAll();
 void FindMaxHp();
 void SortByHp();
-void PrintAll();
+void PrintAll(int start, int size);
 
 
 struct LoLdict
@@ -27,7 +28,7 @@ struct LoLdict
 
 LoLdict List[MAX_LIST] = {
 
-{"가렌",620,0,340,175,"top"},
+	{"가렌",620,0,340,175,"top"},
 	{"갈리오",562,500,335,125,"mid"},
 	{"베인",515,231,330,550,"bot"},
 	{"티모",528,267,330,500,"top"},
@@ -39,8 +40,8 @@ LoLdict List[MAX_LIST] = {
 	{"시비르",530,300,325,350,"bot"},
 	{"모르가나",500,350,320,550,"support"},
 	{"코르키",550,450,125,330,"mid"},
-	{"리신",619,0,350,250,"top"},
-	{"레나타글라스크",500,235,330,125,"support"},
+	{"리 신",619,0,350,250,"top"},
+	{"레나타 글라스크",500,235,330,125,"support"},
 	{"코르키",500,340,330,500,"mid"},
 	{"바드",490,300,330,300,"support"},
 	{"바루스",510,250,345,570,"bot"},
@@ -62,6 +63,8 @@ LoLdict List[MAX_LIST] = {
 
 int main()
 {
+	string name;
+
 	while (true) {
 		cout << "1. SEARCH" << endl;
 		cout << "2. INSERT" << endl;
@@ -77,19 +80,24 @@ int main()
 		{
 		case 1:
 			system("cls");
-			Search();
+			cout << "찾으실 챔피언의 이름을 입력하시오.:  ";
+			cin >> name;
+			Search(0,size(List),&name);
 			break;
 		case 2:
 			system("cls");
-			Insert();
+			cout << "추가할 챔피언의 정보를 입력하시오.:" << endl;
+			Insert(0, size(List));
 			break;
 		case 3:
 			system("cls");
-			Delete();
+			cout << "삭제할 챔피언의 이름을 입력하시오.;";
+			cin >> name;
+			Delete(0,size(List),&name);
 			break;
 		case 4:
 			system("cls");
-			PrintAll();
+			PrintAll( 0 ,size(List));
 			break;
 		case 5:
 			system("cls");
@@ -108,88 +116,62 @@ int main()
 
 }
 
-void Search() {
-	string Ch;
-	cout << "찾을 챔피언의 이름을 입력하시오.:" << endl;
-	cin >> Ch;
-
-	for (int i = 0; i < size(List); i++)
-	{
-		if (Ch.compare(List[i].Name) == 0)
-		{
-			cout << List[i].Name << endl;    
-			cout << List[i].HP << endl;
-			cout << List[i].MP << endl;
-			cout << List[i].Speed << endl;
-			cout << List[i].Range << endl;
-			cout << List[i].Position << endl;
-		}
-		else
-		{
-			cout << "찾으시는 챔피언의 정보가 없습니다." << endl;
-			break;
-		}
+void Search(int start, int size, string* name) {
+	
+	string Ch = *name;
+	
+	if (size == 0) {
+		return;
+	}
+	if (Ch.compare(List[start].Name) == 0) {
+		cout << "이름 : " << List[start].Name << " " << "HP :" << List[start].HP << " " << "MP :" << List[start].MP << " " << "Speed :" << List[start].Speed << " " << "Range :" << List[start].Range << " " << "Position :" << List[start].Position << " " << endl;
+	}
+	else {
+		Search(start + 1, size - 1, name);
 	}
 }
 
-void Insert()
+void Insert(int start, int size)
 {
-	cout << "추가할 챔피언의 정보를 입력하시오.:" << endl;
-
-	bool check = false;
-
-	for (int i = 0; i < MAX_LIST; i++)
-	{
-		if (List[i].HP <= 0)
-		{
-			cin >> List[i].Name >> List[i].HP >> List[i].MP >> List[i].Speed>> List[i].Range>> List[i].Position;
-			break;
-			
-		}
-		else if (List[i].HP > 0 && i == MAX_LIST - 1)
-		{
-			check = true;
-			break;
-		}
+	if (size == 0) {
+		return;
 	}
-	if (check)
-	{
-		cout << "List의 공간이 없습니다.";
+	if (List[start].HP < 0) {
+		cin >> List[start].Name >> List[start].HP >> List[start].MP >> List[start].Speed >> List[start].Range >> List[start].Position;
 	}
-	PrintAll();
+	else
+		Insert(start + 1, size - 1);
+
 }
 
-void Delete() {
-	string Ch;
-	cout << "삭제할 챔피언의 이름을 입력하시오.: " << endl;
-	cin >> Ch;
-	for (int i = 0; i < MAX_LIST; i++)
-	{
-		if (Ch.compare(List[i].Name) == 0)
-		{
-			List[i].Name = "None";
-			List[i].HP = -1;
-			List[i].MP = -1;
-			List[i].Speed =-1;
-			List[i].Range = -1;
-			List[i].Position = "None";
-		}
-		else
-		{
-			cout << "삭제할 챔피언이 리스트에 없습니다." << endl << endl;
-			break;
-		}
+void Delete(int start, int size, string* name) {
+	string Ch = *name;
+
+	if (size == 0) {
+		return;
 	}
-	PrintAll();
+	if (Ch.compare(List[start].Name) == 0) {
+		List[start].Name = 'None';
+		List[start].HP = -1;
+		List[start].MP = -1;
+		List[start].Speed = -1;
+		List[start].Range = -1;
+		List[start].Position = 'None';
+	}
+	else {
+		Search(start + 1, size - 1, name);
+	}
 }
 
-void PrintAll()
+void PrintAll(int start, int size)
 {
-	for (int i = 0; i < size(List); i++)
-	{
-		if (List[i].HP > 0) {
-			cout << List[i].Name << " " << List[i].HP << " " << List[i].MP << " " << List[i].Speed << " " << List[i].Range << " " << List[i].Position << endl;
-		}
+	int count = start;
+	if (List[count].Speed != -1) {
+		cout << List[start].Name << List[start].HP << List[start].MP << List[start].Speed << List[start].Range << List[start].Position << endl;
+	}
+	PrintAll(start + 1, size-1);
+	if (start == size) {
+		exit(-1);
 	}
 }
 
