@@ -9,7 +9,7 @@ using namespace std;
 void Search(int start,int size, string* name);
 void Insert(int start, int size);
 void Delete(int start, int size, string* name);
-void DeleteAll();
+void DeleteAll(int start, int size, string* name);
 void FindMaxHp();
 void SortByHp();
 void PrintAll(int start, int size);
@@ -101,7 +101,9 @@ int main()
 			break;
 		case 5:
 			system("cls");
-			DeleteAll();
+			cout << "삭제하실 포지션을 입력하시오.:";
+			cin >> name;
+			DeleteAll(0,size(List),&name);
 			break;
 		case 6:
 			system("cls");
@@ -159,39 +161,38 @@ void Delete(int start, int size, string* name) {
 		List[start].Position = 'None';
 	}
 	else {
-		Search(start + 1, size - 1, name);
+		Delete(start + 1, size - 1, name);
 	}
 }
 
 void PrintAll(int start, int size)
 {
-	int count = start;
-	if (List[count].Speed != -1) {
+	if (List[start].Speed >0) {
 		cout << List[start].Name << List[start].HP << List[start].MP << List[start].Speed << List[start].Range << List[start].Position << endl;
 	}
-	PrintAll(start + 1, size-1);
 	if (start == size) {
-		exit(-1);
+		return;
 	}
+	PrintAll(start + 1, size-1);
 }
 
-void DeleteAll()
+void DeleteAll(int start, int size, string* name)
 {
-	string Pos;
-	cout << "삭제하실 포지션을 입력하시오.:";
-	cin >> Pos;
-	for (int i = 0; i < size(List); i++)
-	{
-		if (Pos.compare(List[i].Position) == 0)
-		{
-			List[i].Name = "None";
-			List[i].HP = -1;
-			List[i].MP = -1;
-			List[i].Speed = -1;
-			List[i].Range = -1;
-			List[i].Position = "None";
-		}
+	string Ch = *name;
+
+	if (start == MAX_LIST) {
+		return;
 	}
+	if (Ch.compare(List[start].Position) == 0) {
+		List[start].Name = 'None';
+		List[start].HP = -1;
+		List[start].MP = -1;
+		List[start].Speed = -1;
+		List[start].Range = -1;
+		List[start].Position = 'None';
+	}
+		DeleteAll(start + 1, size, name);
+	
 }
 void FindMaxHp()
 {
