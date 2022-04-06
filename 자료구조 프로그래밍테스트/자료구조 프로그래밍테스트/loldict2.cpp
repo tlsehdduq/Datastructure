@@ -1,18 +1,10 @@
 #include<iostream>
 #include<string>
-#include<Windows.h>
+
 
 #define MAX_LIST 30
 
 using namespace std;
-
-void Search(int start, int size, string* name);
-void Insert(int start, int size);
-void Delete(int start, int size, string* name);
-void DeleteAll(int start, int size, string* name);
-void FindMaxHp(int start, int size, int temp);
-
-void PrintAll(int start, int size);
 
 
 struct LoLdict
@@ -61,13 +53,20 @@ LoLdict List[MAX_LIST] = {
 
 };
 
+void Search(int start, int size, string* name);
+void Insert(int start, int size);
+void Delete(int start, int size, string* name);
+void DeleteAll(int start, int size, string* name);
+void FindMaxHp(int start, int size, int temp);
+void PrintAll(int start, int size);
 void SortByHp(LoLdict arr[], int n);
 
 int main()
 {
+	
 	string name;
-
-	while (true) {
+	bool onoff = true;
+	while (onoff) {
 		cout << "1. SEARCH" << endl;
 		cout << "2. INSERT" << endl;
 		cout << "3. DELETE" << endl;
@@ -75,73 +74,87 @@ int main()
 		cout << "5. DELETEALL" << endl;
 		cout << "6. FINDMAXHP" << endl;
 		cout << "7. SORTBYHP" << endl;
+		cout << "8 . EXIT" << endl;
 
-		int key{};
+		char key;
 		cin >> key;
 		switch (key)
 		{
-		case 1:
+		case '1':
 			system("cls");
 			cout << "찾으실 챔피언의 이름을 입력하시오.:  ";
-			cin >> name;
+			cin.ignore();
+			getline(cin, name);
 			Search(0, size(List), &name);
 			break;
-		case 2:
+		case '2':
 			system("cls");
 			cout << "추가할 챔피언의 정보를 입력하시오.:" << endl;
 			Insert(0, size(List));
 			break;
-		case 3:
+		case '3':
 			system("cls");
 			cout << "삭제할 챔피언의 이름을 입력하시오.;";
 			cin >> name;
 			Delete(0, size(List), &name);
 			break;
-		case 4:
+		case '4':
 			system("cls");
 			PrintAll(0, size(List));
 			break;
-		case 5:
+		case '5':
 			system("cls");
 			cout << "삭제하실 포지션을 입력하시오.:";
 			cin >> name;
 			DeleteAll(0, size(List), &name);
 			break;
-		case 6:
+		case '6':
 			system("cls");
 			FindMaxHp(0, size(List), 0);
 			break;
-		case 7:
+		case '7':
 			system("cls");
 			SortByHp(List, size(List));
 			break;
+
+		case '8':
+			onoff = false;
+			cout << "프로그램을 종료합니다." << endl;
+			exit(-1);
 		}
 	}
-
 }
+
 
 void Search(int start, int size, string* name) {
 
 	string Ch = *name;
-
+	int count{};
 	if (start == size) {
+		if (count == 0)
+			cout << "찾으시는 챔피언이 없습니다." << endl;
 		return;
 	}
 	if (Ch.compare(List[start].Name) == 0) {
 		cout << "이름 : " << List[start].Name << " " << "HP :" << List[start].HP << " " << "MP :" << List[start].MP << " " << "Speed :" << List[start].Speed << " " << "Range :" << List[start].Range << " " << "Position :" << List[start].Position << " " << endl;
+		count++;
 	}
 	else {
-		Search(start + 1, size , name);
+		Search(start + 1, size, name);
 	}
 }
+
 
 void Insert(int start, int size)
 {
 	if (start == size) {
+		cout << "남은 공간이 없습니다." << endl;
 		return;
 	}
 	if (List[start].HP < 0) {
+
 		cin >> List[start].Name >> List[start].HP >> List[start].MP >> List[start].Speed >> List[start].Range >> List[start].Position;
+		return;
 	}
 	else
 		Insert(start + 1, size);
@@ -152,6 +165,7 @@ void Delete(int start, int size, string* name) {
 	string Ch = *name;
 
 	if (start == size) {
+		cout << " 삭제할 챔피언이 없습니다." << endl;
 		return;
 	}
 	if (Ch.compare(List[start].Name) == 0) {
@@ -161,9 +175,10 @@ void Delete(int start, int size, string* name) {
 		List[start].Speed = -1;
 		List[start].Range = -1;
 		List[start].Position = 'None';
+		return;
 	}
 	else {
-		Delete(start + 1, size , name);
+		Delete(start + 1, size, name);
 	}
 }
 
