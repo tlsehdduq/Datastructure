@@ -3,8 +3,8 @@
 
 using namespace std;
 
-#define HEIGHT 3
-#define WIDTH 3
+#define HEIGHT 7
+#define WIDTH 7
 string gameboard[HEIGHT][WIDTH] = {};
 int turn = 1;
 
@@ -124,10 +124,32 @@ void concheck() {
 			}
 		}
 	}
+	for (int x = 0; x < WIDTH; x++) {
+		for (int y = 1; y < HEIGHT; y++) {
+			if (gameboard[y][x].compare("@") == 0) {
+				if (gameboard[y][x].compare(gameboard[y-1][x]) == 0) {
+					h_count[0][x]++;
+				}
+			}
+			else if (gameboard[y][x].compare("#") == 0) {
+				if (gameboard[y][x].compare(gameboard[y-1][x]) == 0) {
+					h_count[1][x]++;
+				}
+			}
+		}
+	}
+
+
 	for (int i = 0; i < HEIGHT; i++)
 	{
-		cout << " 흑돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] << "개" << endl;
-		cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[1][i] << "개" << endl;
+		if (w_count[0][i] > w_count[1][i] && w_count[0][i] > h_count[0][i] && w_count[0][i] > h_count[1][i])
+			cout << " 흑돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << "개" << endl;
+		else if (w_count[1][i] > w_count[0][i] && w_count[1][i] > h_count[0][i] && w_count[1][i] > h_count[1][i])
+			cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << "개" << endl;
+		else if (h_count[0][i] > w_count[0][i] && h_count[0][i] > w_count[1][i] && h_count[0][i] > h_count[1][i])
+			cout << " 흑돌 세로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << "개" << endl;
+		else if(h_count[1][i] > w_count[0][i] && h_count[1][i] > w_count[1][i] && h_count[1][i] > h_count[0][i])
+			cout << " 백돌 세로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1<< "개" << endl;
 	}
 }
 
