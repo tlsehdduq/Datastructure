@@ -3,10 +3,12 @@
 
 using namespace std;
 
-#define HEIGHT 7
-#define WIDTH 7
+#define HEIGHT 6
+#define WIDTH 6
+#define CROSS 10
 string gameboard[HEIGHT][WIDTH] = {};
 int turn = 1;
+
 
 void drawboard()
 {
@@ -97,18 +99,24 @@ void RockCount() {
 			}
 		}
 	}
-	for (int i = 0; i < 3; i++) {
-		cout << "흑돌가로" << i << "번째" << w_count[0][i] << endl;
-		cout << "흑돌세로" << i << "번째" << h_count[0][i] << endl;
+	for (int i = 0; i < HEIGHT; i++) {
+		cout << "흑돌 가로 " << i << " 번째 " << w_count[0][i] << " 개 " << "\t";
+		cout << "흑돌 세로 " << i << " 번째 " << h_count[0][i] << " 개 " << endl;
 	}
-	for (int i = 0; i < 3; i++) {
-		cout << "백돌가로" << i << "번째" << w_count[1][i] << endl;
-		cout << "백돌세로" << i << "번째" << h_count[1][i] << endl;
+	for (int i = 0; i < HEIGHT; i++) {
+		cout << "백돌 가로 " << i << " 번째" << w_count[1][i] << " 개 " << "\t";
+		cout << "백돌 세로 " << i << " 번째" << h_count[1][i] << " 개 " << endl;
 	}
 }
 void concheck() {
 	int h_count[2][HEIGHT]{};
 	int w_count[2][WIDTH]{};
+
+	int tempbwcount{}; 
+	int tempbhcount{};
+	int tempwwcount{};
+	int tempwhcount{};
+
 
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 1; x < WIDTH; x++) {
@@ -127,31 +135,66 @@ void concheck() {
 	for (int x = 0; x < WIDTH; x++) {
 		for (int y = 1; y < HEIGHT; y++) {
 			if (gameboard[y][x].compare("@") == 0) {
-				if (gameboard[y][x].compare(gameboard[y-1][x]) == 0) {
+				if (gameboard[y][x].compare(gameboard[y - 1][x]) == 0) {
 					h_count[0][x]++;
 				}
 			}
 			else if (gameboard[y][x].compare("#") == 0) {
-				if (gameboard[y][x].compare(gameboard[y-1][x]) == 0) {
+				if (gameboard[y][x].compare(gameboard[y - 1][x]) == 0) {
 					h_count[1][x]++;
 				}
 			}
 		}
 	}
 
-
 	for (int i = 0; i < HEIGHT; i++)
 	{
-		if (w_count[0][i] > w_count[1][i] && w_count[0][i] > h_count[0][i] && w_count[0][i] > h_count[1][i])
-			cout << " 흑돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << "개" << endl;
+		if (w_count[0][i] > w_count[1][i] )
+		{
+			cout << " 흑돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << " 개" << "\t";
+			tempbwcount = w_count[0][i];
+		}
 		else if (w_count[1][i] > w_count[0][i] && w_count[1][i] > h_count[0][i] && w_count[1][i] > h_count[1][i])
-			cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << "개" << endl;
+		{
+			cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[1][i] + 1 << " 개" << "\t";
+
+		}
 		else if (h_count[0][i] > w_count[0][i] && h_count[0][i] > w_count[1][i] && h_count[0][i] > h_count[1][i])
-			cout << " 흑돌 세로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << "개" << endl;
-		else if(h_count[1][i] > w_count[0][i] && h_count[1][i] > w_count[1][i] && h_count[1][i] > h_count[0][i])
-			cout << " 백돌 세로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1<< "개" << endl;
+		{
+			cout << " 흑돌 세로 연속 개수 - " << i << "번째 줄" << h_count[0][i] + 1 << " 개" << endl;
+		}
+		else if (h_count[1][i] > w_count[0][i] && h_count[1][i] > w_count[1][i] && h_count[1][i] > h_count[0][i])
+		{
+			cout << " 백돌 세로 연속 개수 - " << i << "번째 줄" << h_count[1][i] + 1 << " 개" << endl;
+		}
+	}
+	
+}
+void diagcheck() {
+
+	int rightdown[2][CROSS]{};
+	int leftup[2][CROSS]{};
+
+	int bcount{};
+	int wcount{};
+
+
+	for (int y = 1; y < HEIGHT; y++) {
+		for (int x = 1; x < WIDTH; x++) {
+			if (gameboard[y][x].compare("@") == 0) {
+				if (gameboard[y][x].compare(gameboard[y - 1][x - 1]) == 0) {
+
+				}
+			}
+			else if (gameboard[y][x].compare("#") == 0) {
+				if (gameboard[y][x].compare(gameboard[y - 1][x - 1]) == 0) {
+
+				}
+			}
+		}
 	}
 }
+
 
 int main()
 {
@@ -183,10 +226,12 @@ int main()
 		}
 		inputRock(r_x, r_y);
 
-		cout << "검은돌의 개수 : " << black << endl;
-		cout << "흰돌의 개수 : " << white << endl;
+		cout << " 흑돌의 개수 : " << black << endl;
+		cout << " 흰돌의 개수 : " << white << endl;
+
 		RockCount();
 		concheck();
+		diagcheck();
 	}
 	return 0;
 }
