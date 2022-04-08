@@ -37,6 +37,7 @@ void inputRock(int i_x, int i_y)
 	system("cls");
 	int x, y = 0;
 
+
 	if (gameboard[i_y][i_x] == "*")
 	{
 
@@ -63,6 +64,7 @@ void inputRock(int i_x, int i_y)
 			cout << endl;
 		}
 	}
+
 	else
 	{
 		for (y = 0; y < HEIGHT; y++)
@@ -149,14 +151,14 @@ void concheck() {
 
 	for (int i = 0; i < HEIGHT; i++)
 	{
-		if (w_count[0][i] > w_count[1][i] )
+		if (w_count[0][i] > w_count[1][i] && w_count[0][i] > h_count[0][i]&&w_count[0][i]>h_count[1][i] )
 		{
-			cout << " 흑돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << " 개" << "\t";
+			cout << " 흑돌 가로 연속 개수 - " << i << "번째 줄" << w_count[0][i] + 1 << " 개" << endl;
 			tempbwcount = w_count[0][i];
 		}
 		else if (w_count[1][i] > w_count[0][i] && w_count[1][i] > h_count[0][i] && w_count[1][i] > h_count[1][i])
 		{
-			cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[1][i] + 1 << " 개" << "\t";
+			cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[1][i] + 1 << " 개" << endl;
 
 		}
 		else if (h_count[0][i] > w_count[0][i] && h_count[0][i] > w_count[1][i] && h_count[0][i] > h_count[1][i])
@@ -168,6 +170,7 @@ void concheck() {
 			cout << " 백돌 세로 연속 개수 - " << i << "번째 줄" << h_count[1][i] + 1 << " 개" << endl;
 		}
 	}
+	
 	
 }
 void diagcheck() {
@@ -183,15 +186,19 @@ void diagcheck() {
 		for (int x = 1; x < WIDTH; x++) {
 			if (gameboard[y][x].compare("@") == 0) {
 				if (gameboard[y][x].compare(gameboard[y - 1][x - 1]) == 0) {
-
+					rightdown[0][x]++;
 				}
 			}
 			else if (gameboard[y][x].compare("#") == 0) {
 				if (gameboard[y][x].compare(gameboard[y - 1][x - 1]) == 0) {
-
+					rightdown[1][x]++;
 				}
 			}
 		}
+	}
+	for (int i = 1; i < CROSS; i++) {
+		if (rightdown[0][i] > rightdown[1][i])
+			cout << "대각선 연속의 개수 (흑돌)" << i << "번째" << rightdown[0][i] << " 개" << endl;
 	}
 }
 
