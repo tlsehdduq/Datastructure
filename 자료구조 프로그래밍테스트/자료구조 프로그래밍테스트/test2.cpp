@@ -114,22 +114,18 @@ void concheck() {
 	int h_count[2][HEIGHT]{};
 	int w_count[2][WIDTH]{};
 
-	int tempbwcount{}; 
-	int tempbhcount{};
-	int tempwwcount{};
-	int tempwhcount{};
 
 
 	for (int y = 0; y < HEIGHT; y++) {
 		for (int x = 1; x < WIDTH; x++) {
 			if (gameboard[y][x].compare("@") == 0) {
 				if (gameboard[y][x].compare(gameboard[y][x - 1]) == 0) {
-					w_count[0][y]++;
+
 				}
 			}
 			else if (gameboard[y][x].compare("#") == 0) {
 				if (gameboard[y][x].compare(gameboard[y][x - 1]) == 0) {
-					w_count[1][y]++;
+
 				}
 			}
 		}
@@ -159,7 +155,7 @@ void concheck() {
 		else if (w_count[1][i] > w_count[0][i] && w_count[1][i] > h_count[0][i] && w_count[1][i] > h_count[1][i])
 		{
 			cout << " 백돌 가로 연속 개수 - " << i << "번째 줄" << w_count[1][i] + 1 << " 개" << endl;
-
+			tempwwcount = w_count[1][i];
 		}
 		else if (h_count[0][i] > w_count[0][i] && h_count[0][i] > w_count[1][i] && h_count[0][i] > h_count[1][i])
 		{
@@ -169,6 +165,9 @@ void concheck() {
 		{
 			cout << " 백돌 세로 연속 개수 - " << i << "번째 줄" << h_count[1][i] + 1 << " 개" << endl;
 		}
+	}
+	if (tempbwcount > tempwwcount) {
+		cout << " 가장 큰 가로의 연속하는 돌의 좌표는" << endl;
 	}
 	
 	
@@ -196,9 +195,29 @@ void diagcheck() {
 			}
 		}
 	}
+	for (int y = HEIGHT; y > 0; y--) {
+		for (int x = 1; x < WIDTH; x++) {
+			if (gameboard[y][x].compare("@") == 0) {
+				if (gameboard[y][x].compare(gameboard[y + 1][x - 1]) == 0) {
+					leftup[0][x]++;
+				}
+			}
+			else if (gameboard[y][x].compare("#") == 0) {
+				if (gameboard[y][x].compare(gameboard[y +1][x - 1]) == 0) {
+					leftup[1][x]++;
+				}
+			}
+		}
+	}
 	for (int i = 1; i < CROSS; i++) {
 		if (rightdown[0][i] > rightdown[1][i])
 			cout << "대각선 연속의 개수 (흑돌)" << i << "번째" << rightdown[0][i] << " 개" << endl;
+		else if(rightdown[1][i] > rightdown[0][i])
+			cout << "대각선 연속의 개수 (백돌)" << i << "번째" << rightdown[1][i] << " 개" << endl;
+		else if (leftup[0][i] > leftup[1][i])
+			cout << "대각선 연속의 개수 (흑돌)" << i << "번째" << rightdown[0][i] << " 개" << endl;
+		else if (leftup[1][i] > leftup[0][i])
+			cout << "대각선 연속의 개수 (백돌)" << i << "번째" << rightdown[1][i] << " 개" << endl;
 	}
 }
 
