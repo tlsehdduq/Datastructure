@@ -23,15 +23,21 @@ struct Node {
 	LoLdict Data;
 };
 
+
 void Array2LinkedList(Node** head,LoLdict* champion) {
 	
-	for (int i = 0; i < MAX_LIST; ++i) {
+	Node* headnode = new Node;
+	headnode->Data = champion[0];
+	headnode->Next = *head;
+	*head = headnode;
+	Node* p = *head;
+	for (int i = 1; i < MAX_LIST; ++i) {
 
 		Node* NEW = new Node;
 		NEW->Data = champion[i];
-		
 		NEW->Next = *head;
-		*head = NEW;
+		p->Next = NEW;
+		p = p->Next;
 	}
 }
 LoLdict List[MAX_LIST] = {
@@ -80,7 +86,7 @@ void Delete(Node** head, const string& name) {
 
 void printAll(Node** head) {
 	Node* p;
-	for (p = *head; p->Next != NULL; p = p->Next) {
+	for (p = *head; p->Next != *head; p = p->Next) {
 		cout << p->Data.Name << " " << p->Data.HP << " "<<p->Data.MP<< " "<<p->Data.Speed<< " "<<p->Data.Range<< " "<<p->Data.Position << " "<<  endl;
 	}
 }
@@ -89,13 +95,12 @@ int main()
 {
 
 	while (true) {
-
 		Node* head = NULL;
 		Array2LinkedList(&head, List);
 		string Name;
 		cin >> Name;
-		Delete(&head, Name);
-		//Search(&head, Name);
+		//Delete(&head, Name);
+		Search(&head, Name);
 		printAll(&head);
 	}
 
