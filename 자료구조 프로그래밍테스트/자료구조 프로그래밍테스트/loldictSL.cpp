@@ -24,8 +24,8 @@ struct Node {
 };
 
 
-void Array2LinkedList(Node** head,LoLdict* champion) {
-	
+void Array2LinkedList(Node** head, LoLdict* champion) {
+
 	Node* headnode = new Node;
 	headnode->Data = champion[0];
 	headnode->Next = *head;
@@ -62,13 +62,13 @@ LoLdict List[MAX_LIST] = {
 	{"쉔",620,0,330,200,"top"},
 	{"애쉬",500,350,330,500,"bot"},
 	{"라이즈",550,400,325,400,"mid"},
-	
+
 };
 
 void Search(Node** head, const string& name) {
 	Node* p;
 	for (p = *head; p->Next != *head; p = p->Next) {
-		if(p->Data.Name.compare(name) == 0)
+		if (p->Data.Name.compare(name) == 0)
 			cout << p->Data.Name << " " << p->Data.HP << " " << p->Data.MP << " " << p->Data.Speed << " " << p->Data.Range << " " << p->Data.Position << " " << endl;
 	}
 }
@@ -93,7 +93,7 @@ void Insert(Node** head, LoLdict* champion) {
 void Delete(Node** head, const string& name) {
 
 	Node* p;
-	
+
 	for (p = *head; p->Next != *head; p = p->Next) {
 		if (p->Next->Data.Position.compare(name) == 0) {
 			p->Next = p->Next->Next;
@@ -126,13 +126,23 @@ void FindMaxHp(Node** head) {
 		if (p->Data.HP > p->Next->Data.HP)
 			Temp = p->Data;
 	}
-	cout <<Temp.Name << " " << Temp.HP << " " << Temp.MP << " " << Temp.Speed << " " << Temp.Range << " " << Temp.Position << " " << endl;
+	cout << Temp.Name << " " << Temp.HP << " " << Temp.MP << " " << Temp.Speed << " " << Temp.Range << " " << Temp.Position << " " << endl;
 }
 
-void SortByHp(Node** head) {
+void SortByHp(Node** head, LoLdict* champion) {
 	Node* p;
+	Node* Temp = new Node;
+	Temp->Data = *champion;
 	for (p = *head; p->Next != *head; p = p->Next) {
-		if(p->Data.HP > p->Next->Data.HP)
+		if (p->Data.HP > p->Next->Data.HP)
+		{
+			Temp->Data = p->Next->Data;
+			Temp->Next = p->Next->Next;
+			p->Next->Data = p->Data;
+			p->Next->Next = p->Next;
+			p->Data = Temp->Data;
+			p->Next = Temp->Next;
+		}
 	}
 }
 
@@ -161,7 +171,7 @@ int main()
 			Search(&head, Name);
 			break;
 		case '2':
-			cin >> newchamp.Name >> newchamp.HP >> newchamp.MP>> newchamp.Speed>> newchamp.Range>> newchamp.Position;
+			cin >> newchamp.Name >> newchamp.HP >> newchamp.MP >> newchamp.Speed >> newchamp.Range >> newchamp.Position;
 			Insert(&head, &newchamp);
 			break;
 		case '3':
@@ -179,8 +189,7 @@ int main()
 			FindMaxHp(&head);
 			break;
 		case '7':
-			cin >> Name;
-			Search(&head, Name);
+			SortByHp(&head,&List[0]);
 			break;
 		}
 
