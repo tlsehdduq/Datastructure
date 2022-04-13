@@ -73,35 +73,121 @@ void Search(Node** head, const string& name) {
 	}
 }
 
+void Insert(Node** head, LoLdict* champion) {
+	Node* p;
+	Node* NEW = new Node;
+	NEW->Data = *champion;
+	NEW->Next = NULL;
+
+
+	for (p = *head; p->Next != *head; p = p->Next) {
+		/*if (p->Data.HP < NEW->Data.HP) {
+			NEW->Next = p->Next;
+			p->Next = NEW;
+		}*/
+	}
+	p->Next = NEW;
+	NEW->Next = *head;
+}
 
 void Delete(Node** head, const string& name) {
 
 	Node* p;
-	for (p = *head; p->Next != NULL; p = p->Next) {
-		if (p->Next->Data.Name.compare(name) == 0) {
+	
+	for (p = *head; p->Next != *head; p = p->Next) {
+		if (p->Next->Data.Position.compare(name) == 0) {
 			p->Next = p->Next->Next;
 		}
 	}
 }
 
 void printAll(Node** head) {
+	Node* p = *head;
+	do {
+		cout << p->Data.Name << " " << p->Data.HP << " " << p->Data.MP << " " << p->Data.Speed << " " << p->Data.Range << " " << p->Data.Position << " " << endl;
+		p = p->Next;
+	} while (p != *head);
+
+}
+
+void Delete_All(Node** head, const string& position) {
 	Node* p;
 	for (p = *head; p->Next != *head; p = p->Next) {
-		cout << p->Data.Name << " " << p->Data.HP << " "<<p->Data.MP<< " "<<p->Data.Speed<< " "<<p->Data.Range<< " "<<p->Data.Position << " "<<  endl;
+		if (p->Next->Data.Position.compare(position) == 0) {
+			p->Next = p->Next->Next;
+		}
+	}
+}
+
+void FindMaxHp(Node** head) {
+	Node* p;
+	LoLdict Temp;
+	for (p = *head; p->Next != *head; p = p->Next) {
+		if (p->Data.HP > p->Next->Data.HP)
+			Temp = p->Data;
+	}
+	cout <<Temp.Name << " " << Temp.HP << " " << Temp.MP << " " << Temp.Speed << " " << Temp.Range << " " << Temp.Position << " " << endl;
+}
+
+void SortByHp(Node** head) {
+	Node* p;
+	for (p = *head; p->Next != *head; p = p->Next) {
+		if(p->Data.HP > p->Next->Data.HP)
 	}
 }
 
 int main()
 {
-
+	Node* head = NULL;
+	Array2LinkedList(&head, List);
 	while (true) {
-		Node* head = NULL;
-		Array2LinkedList(&head, List);
+
+		cout << " 1. SEARCH " << endl;
+		cout << " 2. INSERT " << endl;
+		cout << " 3. DELETE " << endl;
+		cout << " 4. DELETEALL" << endl;
+		cout << " 5. PRINTALL " << endl;
+		cout << " 6. FINDMAXHP " << endl;
+		cout << " 7. SORTBYHP " << endl;
+
+		char key{};
+		cin >> key;
 		string Name;
-		cin >> Name;
-		//Delete(&head, Name);
-		Search(&head, Name);
-		printAll(&head);
+		LoLdict newchamp;
+		switch (key)
+		{
+		case '1':
+			cin >> Name;
+			Search(&head, Name);
+			break;
+		case '2':
+			cin >> newchamp.Name >> newchamp.HP >> newchamp.MP>> newchamp.Speed>> newchamp.Range>> newchamp.Position;
+			Insert(&head, &newchamp);
+			break;
+		case '3':
+			cin >> Name;
+			Delete(&head, Name);
+			break;
+		case '4':
+			cin >> Name;
+			Delete_All(&head, Name);
+			break;
+		case '5':
+			printAll(&head);
+			break;
+		case '6':
+			FindMaxHp(&head);
+			break;
+		case '7':
+			cin >> Name;
+			Search(&head, Name);
+			break;
+		}
+
+
+
+
+
 	}
 
 }
