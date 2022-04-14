@@ -87,6 +87,7 @@ void Insert(Node** head, LoLdict* champion) {
 	p->Next = NEW;
 	NEW->Next = *head;
 }
+
 void Delete(Node** head, string& name) {
 
 	Node* p;
@@ -108,11 +109,12 @@ void Delete(Node** head, string& name) {
 				Node* temp = p->Next;
 				p->Next = p->Next->Next;
 				delete temp;
-				
+
 			}
 		}
 	}
 }
+
 void printAll(Node** head) {
 
 	Node* p = *head;
@@ -122,6 +124,7 @@ void printAll(Node** head) {
 	} while (p != *head);
 
 }
+
 void Delete_All(Node** head, string& position) {
 
 	Node* p;
@@ -138,7 +141,7 @@ void Delete_All(Node** head, string& position) {
 				p = *head;
 				delete temp;
 				prevNode = *head;
-			}	
+			}
 			else if (p->Next->Data.Position.compare(position) == 0) {
 				Node* temp = p->Next;
 				p->Next = p->Next->Next;
@@ -158,7 +161,7 @@ void Delete_All(Node** head, string& position) {
 				delete temp;
 				prevNode = p;
 				if (p->Next->Next == *head)
-			
+
 					break;
 			}
 			else {
@@ -168,6 +171,7 @@ void Delete_All(Node** head, string& position) {
 		//cout << '1';
 	}
 }
+
 void FindMaxHp(Node** head) {
 	Node* p = *head;
 	Node* temp = new Node;
@@ -177,22 +181,24 @@ void FindMaxHp(Node** head) {
 		}
 		p = p->Next;
 	} while (p != *head);
-	cout << temp->Data.Name << endl;
+	cout << temp->Data.Name << " " << temp->Data.HP << " " << temp->Data.MP << " " << temp->Data.Speed << " " << temp->Data.Range << " " << temp->Data.Position << endl;
 }
 
-void SortByHp(Node** head, LoLdict* champion) {
+void SortByHp(Node** head) {
 
 	Node* p = *head;
-	Node* Temp = new Node;
-	Node* Prev = *head;
+	while (p->Next != *head) {
+		Node* Temp = p->Next;
 		do {
-			if(p->Data.HP > p->Next->Data.HP){
-				Temp = p;
-				p->Next = p->Next->Next;
-		}
+			if (p->Data.HP < Temp->Data.HP) {
+				LoLdict Ltemp = p->Data;
+				p->Data = Temp->Data;
+				Temp->Data = Ltemp;
+			}
+			Temp = Temp->Next;
+		} while (Temp != *head);                
 		p = p->Next;
-	} while (p != *head);
-
+	}
 }
 
 int main()
@@ -210,7 +216,7 @@ int main()
 		std::cout << " 7. SORTBYHP " << endl;
 
 		char key{};
-		cin >> key;
+		std::cin >> key;
 		string Name;
 		LoLdict newchamp;
 
@@ -252,7 +258,7 @@ int main()
 		case '7':
 			system("cls");
 			std::cout << " 정렬된 리스트" << endl;
-			SortByHp(&head, &List[0]);
+			SortByHp(&head);
 			break;
 		}
 	}
