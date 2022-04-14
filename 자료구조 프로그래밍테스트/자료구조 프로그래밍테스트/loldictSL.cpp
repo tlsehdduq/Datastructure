@@ -1,11 +1,9 @@
 #include<iostream>
 #include<string>
 
-
 #define MAX_LIST 20
 
 using namespace std;
-
 
 struct LoLdict
 {
@@ -32,7 +30,6 @@ void Array2LinkedList(Node** head, LoLdict* champion) {
 	*head = headnode;
 	Node* p = *head;
 	for (int i = 1; i < MAX_LIST; ++i) {
-
 		Node* NEW = new Node;
 		NEW->Data = champion[i];
 		NEW->Next = *head;
@@ -46,7 +43,7 @@ LoLdict List[MAX_LIST] = {
 	{"갈리오",562,500,335,125,"mid"},
 	{"베인",515,231,330,550,"bot"},
 	{"티모",528,267,330,500,"top"},
-	{"소라카",535,425,325,550,"supprt"},
+	{"소라카",535,425,325,550,"support"},
 	{"녹턴",585,275,345,125,"jungle"},
 	{"블리츠크랭크",582,267,325,125,"support"},
 	{"퀸",532,268,335,525,"top"},
@@ -65,12 +62,14 @@ LoLdict List[MAX_LIST] = {
 
 };
 
-void Search(Node** head, const string& name) {
-	Node* p;
-	for (p = *head; p->Next != *head; p = p->Next) {
+void Search(Node** head, string& name) {
+
+	Node* p = *head;;
+	do {
 		if (p->Data.Name.compare(name) == 0)
-			cout << p->Data.Name << " " << p->Data.HP << " " << p->Data.MP << " " << p->Data.Speed << " " << p->Data.Range << " " << p->Data.Position << " " << endl;
-	}
+			std::cout << p->Data.Name << " " << p->Data.HP << " " << p->Data.MP << " " << p->Data.Speed << " " << p->Data.Range << " " << p->Data.Position << " " << endl;
+		p = p->Next;
+	} while (p != *head);
 }
 
 void Insert(Node** head, LoLdict* champion) {
@@ -79,71 +78,121 @@ void Insert(Node** head, LoLdict* champion) {
 	NEW->Data = *champion;
 	NEW->Next = NULL;
 
-
 	for (p = *head; p->Next != *head; p = p->Next) {
-		/*if (p->Data.HP < NEW->Data.HP) {
+		if (p->Data.HP < NEW->Data.HP) {
 			NEW->Next = p->Next;
 			p->Next = NEW;
-		}*/
+		}
 	}
 	p->Next = NEW;
 	NEW->Next = *head;
 }
-
-void Delete(Node** head, const string& name) {
+void Delete(Node** head, string& name) {
 
 	Node* p;
-
 	for (p = *head; p->Next != *head; p = p->Next) {
-		if (p->Next->Data.Position.compare(name) == 0) {
-			p->Next = p->Next->Next;
+
+		if (p == *head) {
+			if (p->Data.Name.compare(name) == 0) {
+				Node* temp = *head;
+				*head = p->Next;
+
+				for (p = p->Next; p->Next != temp; p = p->Next) {}
+				p->Next = *head;
+				delete temp;
+				break;
+			}
+		}
+		else {
+			if (p->Next->Data.Name.compare(name) == 0) {
+				Node* temp = p->Next;
+				p->Next = p->Next->Next;
+				delete temp;
+				
+			}
 		}
 	}
 }
-
 void printAll(Node** head) {
+
 	Node* p = *head;
 	do {
-		cout << p->Data.Name << " " << p->Data.HP << " " << p->Data.MP << " " << p->Data.Speed << " " << p->Data.Range << " " << p->Data.Position << " " << endl;
+		std::cout << p->Data.Name << " " << p->Data.HP << " " << p->Data.MP << " " << p->Data.Speed << " " << p->Data.Range << " " << p->Data.Position << " " << endl;
 		p = p->Next;
 	} while (p != *head);
 
 }
+void Delete_All(Node** head, string& position) {
 
-void Delete_All(Node** head, const string& position) {
 	Node* p;
+	Node* prevNode = *head;
 	for (p = *head; p->Next != *head; p = p->Next) {
-		if (p->Next->Data.Position.compare(position) == 0) {
-			p->Next = p->Next->Next;
+		p = prevNode;
+		if (p == *head) {
+			if (p->Data.Position.compare(position) == 0) {
+				Node* temp = *head;
+				*head = p->Next;
+
+				for (p = p->Next; p->Next != temp; p = p->Next) {}
+				p->Next = *head;
+				p = *head;
+				delete temp;
+				prevNode = *head;
+			}	
+			else if (p->Next->Data.Position.compare(position) == 0) {
+				Node* temp = p->Next;
+				p->Next = p->Next->Next;
+				delete temp;
+				prevNode = p;
+				if (p->Next->Next == *head)
+					break;
+			}
+			else {
+				prevNode = p->Next;
+			}
 		}
+		else {
+			if (p->Next->Data.Position.compare(position) == 0) {
+				Node* temp = p->Next;
+				p->Next = p->Next->Next;
+				delete temp;
+				prevNode = p;
+				if (p->Next->Next == *head)
+			
+					break;
+			}
+			else {
+				prevNode = p->Next;
+			}
+		}
+		//cout << '1';
 	}
 }
-
 void FindMaxHp(Node** head) {
-	Node* p;
-	LoLdict Temp;
-	for (p = *head; p->Next != *head; p = p->Next) {
-		if (p->Data.HP > p->Next->Data.HP)
-			Temp = p->Data;
-	}
-	cout << Temp.Name << " " << Temp.HP << " " << Temp.MP << " " << Temp.Speed << " " << Temp.Range << " " << Temp.Position << " " << endl;
+	Node* p = *head;
+	Node* temp = new Node;
+	do {
+		if (p->Data.HP > temp->Data.HP) {
+			temp->Data = p->Data;
+		}
+		p = p->Next;
+	} while (p != *head);
+	cout << temp->Data.Name << endl;
 }
 
 void SortByHp(Node** head, LoLdict* champion) {
-	Node* p;
+
+	Node* p = *head;
 	Node* Temp = new Node;
-	Temp->Data = *champion;
-	for (p = *head; p->Next != *head; p = p->Next) {
-		if (p->Data.HP > p->Next->Data.HP)
-		{
-			Temp->Data = p->Next->Data;
-			Temp->Next = p->Next->Next;
-			p->Next->Data = p->Data;
-			p->Next->Next = p->Next;
-			p->Data = Temp->Data;
-			p->Next = Temp->Next;
+	Node* Prev = *head;
+		do {
+			if(p->Data.HP > p->Next->Data.HP){
+				Temp = p;
+				p->Next = p->Next->Next;
 		}
-	}
+		p = p->Next;
+	} while (p != *head);
+
 }
 
 int main()
@@ -152,51 +201,59 @@ int main()
 	Array2LinkedList(&head, List);
 	while (true) {
 
-		cout << " 1. SEARCH " << endl;
-		cout << " 2. INSERT " << endl;
-		cout << " 3. DELETE " << endl;
-		cout << " 4. DELETEALL" << endl;
-		cout << " 5. PRINTALL " << endl;
-		cout << " 6. FINDMAXHP " << endl;
-		cout << " 7. SORTBYHP " << endl;
+		std::cout << " 1. SEARCH " << endl;
+		std::cout << " 2. INSERT " << endl;
+		std::cout << " 3. DELETE " << endl;
+		std::cout << " 4. DELETEALL" << endl;
+		std::cout << " 5. PRINTALL " << endl;
+		std::cout << " 6. FINDMAXHP " << endl;
+		std::cout << " 7. SORTBYHP " << endl;
 
 		char key{};
 		cin >> key;
 		string Name;
 		LoLdict newchamp;
+
 		switch (key)
 		{
 		case '1':
+			system("cls");
+			std::cout << " 찾으실 챔피언의 이름을 입력하시오. " << endl;
 			cin >> Name;
 			Search(&head, Name);
 			break;
 		case '2':
+			system("cls");
+			std::cout << " 추가하실 챔피언의 정보를 입력하시오.: " << endl;
 			cin >> newchamp.Name >> newchamp.HP >> newchamp.MP >> newchamp.Speed >> newchamp.Range >> newchamp.Position;
 			Insert(&head, &newchamp);
 			break;
 		case '3':
+			system("cls");
+			std::cout << " 삭제하실 챔피언의 이름을 입력하시오. " << endl;
 			cin >> Name;
 			Delete(&head, Name);
 			break;
 		case '4':
+			system("cls");
+			std::cout << "삭제하실 포지션을 입력하시오. " << endl;
 			cin >> Name;
 			Delete_All(&head, Name);
 			break;
 		case '5':
+			system("cls");
 			printAll(&head);
 			break;
 		case '6':
+			system("cls");
+			std::cout << " 최대 HP " << endl;
 			FindMaxHp(&head);
 			break;
 		case '7':
-			SortByHp(&head,&List[0]);
+			system("cls");
+			std::cout << " 정렬된 리스트" << endl;
+			SortByHp(&head, &List[0]);
 			break;
 		}
-
-
-
-
-
 	}
-
 }
