@@ -79,10 +79,10 @@ void Insert(Node** head, LoLdict* champion) {
 	NEW->Next = NULL;
 
 	for (p = *head; p->Next != *head; p = p->Next) {
-		if (p->Data.HP < NEW->Data.HP) {
-			NEW->Next = p->Next;
-			p->Next = NEW;
-		}
+		//if (p->Data.HP < NEW->Data.HP) {
+		//	NEW->Next = p->Next;
+		//	p->Next = NEW;
+		//}
 	}
 	p->Next = NEW;
 	NEW->Next = *head;
