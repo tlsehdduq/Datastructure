@@ -225,25 +225,25 @@ int main()
 		case '1':
 			system("cls");
 			std::cout << " 찾으실 챔피언의 이름을 입력하시오. " << endl;
-			cin >> Name;
+			std::cin >> Name;
 			Search(&head, Name);
 			break;
 		case '2':
 			system("cls");
 			std::cout << " 추가하실 챔피언의 정보를 입력하시오.: " << endl;
-			cin >> newchamp.Name >> newchamp.HP >> newchamp.MP >> newchamp.Speed >> newchamp.Range >> newchamp.Position;
+			std::cin >> newchamp.Name >> newchamp.HP >> newchamp.MP >> newchamp.Speed >> newchamp.Range >> newchamp.Position;
 			Insert(&head, &newchamp);
 			break;
 		case '3':
 			system("cls");
 			std::cout << " 삭제하실 챔피언의 이름을 입력하시오. " << endl;
-			cin >> Name;
+			std::cin >> Name;
 			Delete(&head, Name);
 			break;
 		case '4':
 			system("cls");
 			std::cout << "삭제하실 포지션을 입력하시오. " << endl;
-			cin >> Name;
+			std::cin >> Name;
 			Delete_All(&head, Name);
 			break;
 		case '5':
