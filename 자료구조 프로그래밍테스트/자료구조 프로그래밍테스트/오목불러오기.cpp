@@ -1,308 +1,730 @@
 
 #include<iostream>
-#include<fstream>
-
-#define BOARD_SIZE 19
+#define GAMEBOARD 19
 
 using namespace std;
 
 struct OMOK {
-	char a;
-	bool b;
+	char style;
+	bool check;
 };
 
-struct omokstack {
-	int scanx, scany;
-	char scanOX;
+struct Count {
+	int ccount;
+	int b_x[GAMEBOARD];
+	int b_y[GAMEBOARD];
+	int w_x[GAMEBOARD];
+	int w_y[GAMEBOARD];
+	char R;
 };
 
-struct NODE {
-	NODE* Next;
-	omokstack data;
-};
-
-
-void getstack(NODE** head, int x, int y, bool turn)
+void Rowstone(OMOK arr[][GAMEBOARD], Count* Rowdol)
 {
-	NODE* newnode = new NODE;
-	newnode->data.scanx = x;
-	newnode->data.scany = y;
-	if (turn == false)
+	int nowcount = 0;
+	int x[GAMEBOARD];
+	int y[GAMEBOARD];
+	int xindex = 0;
+	int yindex = 0;
+
+	for (int i = 0; i < GAMEBOARD; i++)
 	{
-		newnode->data.scanOX = 'O';
-	}
-	else
-	{
-		newnode->data.scanOX = 'X';
-	}
-	if (*head == NULL)
-	{
-		newnode->Next = NULL;
-		*head = newnode;
-	}
-	else
-	{
-		newnode->Next = *head;
-		*head = newnode;
+		for (int j = 0; j < GAMEBOARD; j++)
+		{
+			if (arr[i][j].style == '@')
+			{
+				for (int k = j; arr[i][k].style == '@'; k++)
+				{
+					nowcount++;
+					x[xindex] = k;
+					y[yindex] = i;
+					xindex++;
+					yindex++;
+					if (arr[i][k + 1].style == '+' && arr[i][k + 2].style == '@')
+					{
+						k++;
+						j++;
+					}
+					j++;
+				}
+				if (nowcount > Rowdol->ccount)
+				{
+					Rowdol->ccount = nowcount;
+
+					for (int u = 0; u < nowcount; u++)
+					{
+						Rowdol->b_x[u] = x[u];
+						Rowdol->b_y[u] = y[u];
+					}
+					Rowdol->R = '@';
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+		for (int j = 0; j < GAMEBOARD; j++)
+		{
+			if (arr[i][j].style == '#')
+			{
+				for (int k = j; arr[i][k].style == '#'; k++)
+				{
+					nowcount++;
+					x[xindex] = j;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[i][k + 1].style == '*' && arr[i][k + 2].style == '#')
+					{
+						k++;
+						j++;
+					}
+					j++;
+				}
+				if (nowcount > Rowdol->ccount)
+				{
+					Rowdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Rowdol->w_x[u] = x[u];
+						Rowdol->w_y[u] = y[u];
+					}
+					Rowdol->R = '#';
+				}
+			}
+			nowcount = 0;
+		}
 	}
 }
 
-void backstack(struct NODE** cancle, struct NODE** head, int* x, int* y)
+void Colstone(OMOK arr[][GAMEBOARD], Count* Coldol)
 {
-	NODE* newnode = new NODE;
-	NODE* p;
-	p = *head;
-	if (*cancle == NULL)
-	{
-		newnode->Next = NULL;
-		*cancle = newnode;
-	}
-	else
-	{
-		newnode->Next = *cancle;
-		*cancle = newnode;
-	}
-	newnode->data.scanx = p->data.scanx;
-	newnode->data.scany = p->data.scany;
-	newnode->data.scanOX = p->data.scanOX;
+	int nowcount = 0;
+	int x[GAMEBOARD];
+	int y[GAMEBOARD];
+	int xindex = 0;
+	int yindex = 0;
 
-	*x = p->data.scanx;
-	*y = p->data.scany;
 
-	*head = p->Next;
-	delete p;
+	for (int i = 0; i < GAMEBOARD; i++)
+	{
+		for (int j = 0; j < GAMEBOARD; j++)
+		{
+			if (arr[j][i].style == '@')
+			{
+				for (int k = j; arr[k][i].style == '@'; k++)
+				{
+					nowcount++;
+					x[xindex] = i;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[k + 1][i].style == '*' && arr[k + 2][i].style == '@')
+					{
+						k++;
+						j++;
+					}
+					j++;
+
+					if (nowcount > Coldol->ccount)
+					{
+						Coldol->ccount = nowcount;
+						for (int u = 0; u < nowcount; u++)
+						{
+							Coldol->b_x[u] = x[u];
+							Coldol->b_y[u] = y[u];
+						}
+						Coldol->R = '@';
+					}
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+		for (int j = 0; j < GAMEBOARD; j++)
+		{
+			if (arr[j][i].style == '#')
+			{
+				for (int k = j; arr[k][i].style == '#'; k++)
+				{
+					nowcount++;
+					x[xindex] = i;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[k + 1][i].style == '*' && arr[k + 2][i].style == '#')
+					{
+						k++;
+						j++;
+					}
+					j++;
+					if (nowcount > Coldol->ccount)
+					{
+						Coldol->ccount = nowcount;
+						for (int u = 0; u < nowcount; u++)
+						{
+							Coldol->w_x[u] = x[u];
+							Coldol->w_y[u] = y[u];
+						}
+						Coldol->R = '#';
+					}
+				}
+			}
+			nowcount = 0;
+		}
+	}
 }
 
-void cancelback(struct NODE** cancle, struct NODE** head, int* x, int* y)
+void Crossstone(OMOK arr[][GAMEBOARD], Count* Crossdol)
 {
-	struct NODE* newnode = new NODE;
-	struct NODE* p;
+	int nowcount = 0;
+	int x[GAMEBOARD];
+	int y[GAMEBOARD];
+	int xindex = 0;
+	int yindex = 0;
 
-	p = *cancle;
-
-	if (*head == NULL)
+	for (int i = 0; i < GAMEBOARD; i++)//좌상 -> 우
 	{
-		newnode->Next = NULL;
-		*head = newnode;
+		for (int j = 0; j < GAMEBOARD - i; j++)
+		{
+			if (arr[j][j + i].style == '@')
+			{
+				for (int k = j; arr[k][k + i].style == '@'; k++)
+				{
+					nowcount++;
+					x[xindex] = k + i;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[k + 1][k + i + 1].style == '*' && arr[k + 2][k + i + 2].style == '@')
+					{
+						k++;
+						j++;
+					}
+					j++;
+					if (nowcount > Crossdol->ccount)
+					{
+						Crossdol->ccount = nowcount;
+						for (int u = 0; u < nowcount; u++)
+						{
+							Crossdol->b_x[u] = x[u];
+							Crossdol->b_y[u] = y[u];
+						}
+						Crossdol->R = '@';
+					}
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+		for (int j = 0; j < GAMEBOARD - i; j++)
+		{
+			if (arr[j][j + i].style == '#')
+			{
+				for (int k = j; arr[k][k + i].style == '#'; k++)
+				{
+					nowcount++;
+					x[xindex] = k + i;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[k + 1][k + i + 1].style == '*' && arr[k + 2][k + i + 2].style == '#')
+					{
+						k++;
+						j++;
+					}
+					j++;
+					if (nowcount > Crossdol->ccount)
+					{
+						Crossdol->ccount = nowcount;
+						for (int u = 0; u < nowcount; u++)
+						{
+							Crossdol->w_x[u] = x[u];
+							Crossdol->w_y[u] = y[u];
+						}
+						Crossdol->R = '#';
+					}
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
 	}
-	else
+
+	for (int i = 1; i < GAMEBOARD; i++) //좌상 -> 하
 	{
-		newnode->Next = *head;
-		*head = newnode;
+		for (int j = 0; j < GAMEBOARD - i; j++)
+		{
+			if (arr[i + j][j].style == '@')
+			{
+				for (int k = j; arr[i + k][k].style == '@'; k++)
+				{
+					nowcount++;
+					x[xindex] = k;
+					y[yindex] = k + i;
+					xindex++;
+					yindex++;
+					if (arr[i + k + 1][k + 1].style == '*' && arr[i + k + 2][k + 2].style == '@')
+					{
+						k++;
+						j++;
+					}
+					j++;
+				}
+
+				if (nowcount > Crossdol->ccount)
+				{
+					Crossdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Crossdol->b_x[u] = x[u];
+						Crossdol->b_y[u] = y[u];
+					}
+					Crossdol->R = '@';
+
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+		for (int j = 0; j < GAMEBOARD - i; j++)
+		{
+			if (arr[i + j][j].style == '#')
+			{
+				for (int k = j; arr[i + k][k].style == '#'; k++)
+				{
+					nowcount++;
+					x[xindex] = k;
+					y[yindex] = k + i;
+					xindex++;
+					yindex++;
+					if (arr[i + k + 1][k + 1].style == '*' && arr[i + k + 2][k + 2].style == '#')
+					{
+						k++;
+						j++;
+					}
+					j++;
+				}
+
+				if (nowcount > Crossdol->ccount)
+				{
+					Crossdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Crossdol->w_x[u] = x[u];
+						Crossdol->w_y[u] = y[u];
+					}
+					Crossdol->R = '#';
+
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
 	}
-	newnode->data.scanx = p->data.scanx;
-	newnode->data.scany = p->data.scany;
-	newnode->data.scanOX = p->data.scanOX;
 
-	*x = p->data.scanx;
-	*y = p->data.scany;
+	for (int i = GAMEBOARD - 1; i >= 0; i--) //우상 -> 좌
+	{
+		for (int j = 0; j < GAMEBOARD - i; j++)
+		{
+			if (arr[j][i - j].style == '@')
+			{
+				for (int k = j; arr[k][i - k].style == '@'; k++)
+				{
+					nowcount++;
+					x[xindex] = k - i;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[k + 1][i - k - 1].style == '*' && arr[k + 2][i - k - 2].style == '@')
+					{
+						k++;
+						j++;
+					}
+					j++;
+				}
 
-	*cancle = p->Next;
-	delete p;
+				if (nowcount > Crossdol->ccount)
+				{
+					Crossdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Crossdol->b_x[u] = x[u];
+						Crossdol->b_y[u] = y[u];
+					}
+					Crossdol->R = '@';
+
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+		for (int j = 0; j < GAMEBOARD - i; j++)
+		{
+			if (arr[j][i - j].style == '#')
+			{
+				for (int k = j; arr[k][i - k].style == '#'; k++)
+				{
+					nowcount++;
+					x[xindex] = k - i;
+					y[yindex] = k;
+					xindex++;
+					yindex++;
+					if (arr[k + 1][i - k - 1].style == '*' && arr[k + 2][i - k - 2].style == '#')
+					{
+						k++;
+						j++;
+					}
+					j++;
+				}
+
+				if (nowcount > Crossdol->ccount)
+				{
+					Crossdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Crossdol->w_x[u] = x[u];
+						Crossdol->w_y[u] = y[u];
+					}
+					Crossdol->R = '#';
+
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+	}
+
+	for (int i = 1; i < GAMEBOARD; i++)//우상 -> 하
+	{
+		for (int j = GAMEBOARD - 1; j >= i; j--)
+		{
+			if (arr[i + 18 - j][j].style)
+			{
+				for (int k = j; arr[i + 18 - k][k].style == '@'; k--)
+				{
+					nowcount++;
+					x[xindex] = k;
+					y[yindex] = i + 18 - k;
+					xindex++;
+					yindex++;
+					if (arr[i + 18 - k + 1][k - 1].style == '*' && arr[i + 18 - k + 2][k - 2].style == '@')
+					{
+						k--;
+						j--;
+					}
+					j--;
+				}
+
+				if (nowcount > Crossdol->ccount)
+				{
+					Crossdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Crossdol->b_x[u] = x[u];
+						Crossdol->b_y[u] = y[u];
+					}
+					Crossdol->R = '@';
+
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+		for (int j = GAMEBOARD - 1; j >= i; j--)
+		{
+			if (arr[i + 18 - j][j].style)
+			{
+				for (int k = j; arr[i + 18 - k][k].style == '#'; k--)
+				{
+					nowcount++;
+					x[xindex] = k;
+					y[yindex] = i + 18 - k;
+					xindex++;
+					yindex++;
+					if (arr[i + 18 - k + 1][k - 1].style == '*' && arr[i + 18 - k + 2][k - 2].style == '#')
+					{
+						k--;
+						j--;
+					}
+					j--;
+				}
+
+				if (nowcount > Crossdol->ccount)
+				{
+					Crossdol->ccount = nowcount;
+					for (int u = 0; u < nowcount; u++)
+					{
+						Crossdol->w_x[u] = x[u];
+						Crossdol->w_y[u] = y[u];
+					}
+					Crossdol->R = '#';
+
+				}
+			}
+			nowcount = 0;
+			xindex = 0;
+			yindex = 0;
+		}
+
+	}
 }
 
 int main()
 {
-	NODE* head = NULL;
-	NODE* cancelhead = NULL;
-	OMOK arr[BOARD_SIZE][BOARD_SIZE];
+	OMOK arr[GAMEBOARD][GAMEBOARD];
+	Count Rowdol, Coldol, Crossdol;
 
 	int inputx = -1, inputy = -1;
-	char button;
 	bool turn = true;
-	bool loop = true;
 
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = 0; i < GAMEBOARD; i++)
 	{
-		for (int j = 0; j < BOARD_SIZE; j++)
+		for (int j = 0; j < GAMEBOARD; j++)
 		{
-			arr[i][j].a = '*';
+			arr[i][j].style = '*';
+			cout << arr[i][j].style << " ";
+			arr[i][j].check = false;
 
-			cout << arr[i][j].a << " ";
-
-			arr[i][j].b = false;
 		}
 		cout << endl;
 	}
 
-
-	while (loop)
+	while (true)
 	{
+		cout << " 좌표를 입력해주세요. : " << endl;
+		cin >> inputy >> inputx;
 
-		cout << "오목돌 입력 : O , 오목돌 무르기 : U,  오목돌 무르기 취소 : R , 불러오기 : L,  오목판 저장후 종료 : X" << endl;
-		cin >> button;
-		switch (button)
+		if ((inputx > 18 || inputx < 0) || (inputy > 18 || inputy < 0))
 		{
-		case 'l':
-		{
-			ifstream in{ "test.txt" };
-			while (!in.eof())
-			{
-				NODE* p = head;
-
-				NODE* newnode = new NODE;
-				in >> newnode->data.scany;
-				in >> newnode->data.scanx;
-				in >> newnode->data.scanOX;
-				if (newnode->data.scanx == -1)
-				{
-					delete newnode;
-					break;
-				}
-
-				else if (head == NULL)
-				{
-					arr[newnode->data.scany][newnode->data.scanx].a = newnode->data.scanOX;
-					arr[newnode->data.scany][newnode->data.scanx].b = true;
-					if (newnode->data.scanOX == 'O')
-					{
-						turn = false;
-					}
-					else
-					{
-						turn = true;
-					}
-
-					newnode->Next = NULL;
-					head = newnode;
-					p = head;
-				}
-				else if (head != NULL)
-				{
-					if (p != NULL)
-					{
-						arr[newnode->data.scany][newnode->data.scanx].a = newnode->data.scanOX;
-						arr[newnode->data.scany][newnode->data.scanx].b = true;
-						if (newnode->data.scanOX == 'O')
-						{
-							turn = false;
-						}
-						else
-						{
-							turn = true;
-						}
-						newnode->Next = NULL;
-						p->Next = newnode;
-						p = p->Next;
-					}
-				}
-
-			}
-
-			for (int i = 0; i < BOARD_SIZE; i++)
-			{
-				for (int j = 0; j < BOARD_SIZE; j++)
-				{
-					cout << arr[i][j].a << " ";
-				}
-				cout << endl;
-			}
-			break;
+			cout << " 범위를 넘었습니다." << endl;
+			continue;
 		}
-		case 'o':
-		
-			cout << "좌표 값을 입력하세요 : " << endl;
-			cin >> inputx >> inputy;
 
-			if ((inputx > 18 || inputx < 0) || (inputy > 18 || inputy < 0))
+		if (arr[inputy][inputx].check == true)
+		{
+			cout << " 이미 돌이 놓여져 있습니다. " << endl;
+			continue;
+		}
+		else
+		{
+			if (turn == true)
 			{
-				cout << "범위를 넘었습니다." << endl;
-				break;
-			}
-
-			if (arr[inputy][inputx].b == true)
-			{
-				cout << "이미 돌이 놓여져 있습니다. " << endl;
-				break;
-			}
-
-			else
-			{
-				if (turn == true)
-				{
-					arr[inputy][inputx].a = 'O';
-					arr[inputy][inputx].b = true;
-					turn = false;
-				}
-
-				else
-				{
-					arr[inputy][inputx].a = 'X';
-					arr[inputy][inputx].b = true;
-					turn = true;
-				}
-			}
-
-			getstack(&head, inputx, inputy, turn);
-
-			for (int i = 0; i < BOARD_SIZE; i++)
-			{
-				for (int j = 0; j < BOARD_SIZE; j++)
-				{
-					cout << arr[i][j].a << " ";
-				}
-				cout << endl;
-			}
-			break;
-		
-		case 'u':
-		
-			backstack(&cancelhead, &head, &inputx, &inputy);
-
-			arr[inputy][inputx].a = '*';
-			arr[inputy][inputx].b = false;
-
-			for (int i = 0; i < BOARD_SIZE; i++)
-			{
-				for (int j = 0; j < BOARD_SIZE; j++)
-				{
-					cout << arr[i][j].a << " ";
-				}
-				cout << endl;
-			}
-			break;
-		
-		case 'r':
-		
-			cancelback(&cancelhead, &head, &inputx, &inputy);
-			if (turn == false)
-			{
-				arr[inputy][inputx].a = 'O';
-				arr[inputy][inputx].b = true;
-				turn = true;
-			}
-			else
-			{
-				arr[inputy][inputx].a = 'X';
-				arr[inputy][inputx].b = true;
+				arr[inputy][inputx].style = '@';
+				arr[inputy][inputx].check = true;
 				turn = false;
 			}
-			for (int i = 0; i < BOARD_SIZE; i++)
+
+			else
 			{
-				for (int j = 0; j < BOARD_SIZE; j++)
-				{
-					cout << arr[i][j].a << " ";
-				}
-				cout << endl;;
+				arr[inputy][inputx].style = '#';
+				arr[inputy][inputx].check = true;
+				turn = true;
 			}
-			break;
-		
-		case 'x':
-			loop = false;
-			break;
-		
+		}
+
+		for (int i = 0; i < GAMEBOARD; i++)
+		{
+			for (int j = 0; j < GAMEBOARD; j++)
+			{
+				cout << arr[i][j].style << " ";
+
+			}
+			cout << endl;
+		}
+
+		Rowstone(arr, &Rowdol);
+		Colstone(arr, &Coldol);
+		Crossstone(arr, &Crossdol);
+
+		if (Rowdol.ccount > Coldol.ccount)
+		{
+			if (Rowdol.ccount > Crossdol.ccount)
+			{
+				if (Rowdol.R == '@')
+				{
+					for (int i = 0; i < Rowdol.ccount; i++)
+					{
+						cout << " 좌표 : " << Rowdol.b_y[i] << " , " << Rowdol.b_x[i] << endl;
+
+					}
+
+
+					if (Rowdol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Rowdol.ccount == 4)
+					{
+
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < Rowdol.ccount; i++)
+					{
+						cout << "좌표 : " << Rowdol.w_y[i] << " , " << Rowdol.w_x[i] << endl;
+
+					}
+					cout << " 연속된 돌의 개수 : " << Rowdol.R << " 돌 " << Rowdol.ccount << " 개" << endl;
+
+
+					if (Rowdol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Rowdol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+			}
+			else if (Rowdol.ccount < Crossdol.ccount)
+			{
+				if (Crossdol.R == '@')
+				{
+					for (int i = 0; i < Crossdol.ccount; i++)
+					{
+						cout << " 좌표 : " << Crossdol.b_y[i] << " , " << Crossdol.b_x[i] << endl;
+
+					}
+					cout << "연속된 돌의 개수 : " << Crossdol.R << " 돌 " << Crossdol.ccount << " 개" << endl;
+
+
+					if (Crossdol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Crossdol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4공격을 합니다." << endl;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < Crossdol.ccount; i++)
+					{
+						cout << " 좌표 : " << Crossdol.w_y[i] << " , " << Crossdol.w_x[i] << endl;
+
+					}
+					cout << " 연속된 돌의 개수 : " << Crossdol.R << "  " << Crossdol.ccount << " 개" << endl;
+
+
+					if (Crossdol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Crossdol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+			}
+		}
+		else if (Coldol.ccount > Rowdol.ccount)
+		{
+			if (Coldol.ccount > Crossdol.ccount)
+			{
+				if (Coldol.R == '@')
+				{
+					for (int i = 0; i < Coldol.ccount; i++)
+					{
+						cout << " 좌표 : " << Coldol.b_y[i] << " , " << Coldol.b_x[i] << endl;
+
+					}
+					cout << "연속된 돌의 개수 " << Coldol.R << " " << Coldol.ccount << " 개" << endl;
+
+
+					if (Coldol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Coldol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < Coldol.ccount; i++)
+					{
+						cout << " 좌표 : " << Coldol.w_y[i] << " , " << Coldol.w_x[i] << endl;
+
+					}
+					cout << "연속된 돌의 개수 : " << Coldol.R << " " << Coldol.ccount << " 개 " << endl;
+
+
+					if (Coldol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Coldol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+			}
+			else
+			{
+				if (Crossdol.R == '@')
+				{
+					for (int i = 0; i < Crossdol.ccount; i++)
+					{
+						cout << " 좌표 : " << Crossdol.b_y[i] << " , " << Crossdol.b_x[i] << endl;
+
+					}
+					cout << "연속된 돌의 개수 : " << Crossdol.R << " " << Crossdol.ccount << " 개 " << endl;
+
+
+					if (Crossdol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Crossdol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+				else
+				{
+					for (int i = 0; i < Crossdol.ccount; i++)
+					{
+						cout << "좌표 : " << Crossdol.w_y[i] << " , " << Crossdol.w_x[i] << endl;
+
+					}
+					cout << " 연속된 돌의 개수  : " << Crossdol.R << " " << Crossdol.ccount << " 개" << endl;
+
+
+					if (Crossdol.ccount == 3)
+					{
+						cout << "위에 표시된 좌표에서 3 공격을 합니다." << endl;
+					}
+					else if (Crossdol.ccount == 4)
+					{
+						cout << "위에 표시된 좌표에서 4 공격을 합니다." << endl;
+					}
+				}
+			}
+		}
+		else if (Rowdol.ccount == Coldol.ccount && Rowdol.ccount == Crossdol.ccount)
+		{
+			cout << " 가로 세로 대각선으로 연속된 돌의 개수가 같습니다. - " << Rowdol.ccount << " 개" << endl;
+
 		}
 	}
-	ofstream out{ "test.txt" };
-	NODE* k = head;
-	for (; k->Next != NULL; k = k->Next)
-	{
-		out << k->data.scany;
-		out << k->data.scanx;
-		out << k->data.scanOX;
-	}
-	out << k->data.scany;
-	out << k->data.scanx;
-	out << k->data.scanOX;
 
 }
